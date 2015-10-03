@@ -29,7 +29,7 @@ class ReversiForm : Form
         }
 
 
-
+        //Verandering om te testen of git werkt
 
 
 
