@@ -4,8 +4,9 @@ using System.Drawing;
 
 class Veld : Panel
 {
-    int toestand;
-    bool legaal;
+    public int toestand;
+    public bool legaal;
+    public bool showleg;
     ReversiForm parent;
     int x, y, omvang;
 
@@ -16,6 +17,7 @@ class Veld : Panel
         y = ypos;
         omvang = veldomvang;
         toestand = 0;
+        showleg = false;
 
         this.Size = new Size(omvang, omvang);
         this.Paint += Veld_Paint;
@@ -38,14 +40,16 @@ class Veld : Panel
 
         switch(toestand)
         {
+            //Als de zet van rood is
             case 1:
                 g.FillEllipse(Brushes.Red, veld);
                 break;
+            //Als de zet van blauw is
             case 2:
                 g.FillEllipse(Brushes.Blue, veld);
                 break;
             default:
-                //Doe niets extra
+                //Mits in deze beurt legaal, en 'show', zwarte legaliteitscirkel
                 break;
         }
 
@@ -56,7 +60,8 @@ class Veld : Panel
         //Functie die moet gaan checken: is de zet legaal (voor de huidige speler),
         //zo ja, speel hem uit (en draai alle gevangen stenen om)
         //Rood is 1, blauw is 2;
-        int toestand = parent.beurt;
+        toestand = parent.beurt;
+        this.Invalidate();
         parent.BeurtWissel();
     }
 }
