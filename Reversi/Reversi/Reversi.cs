@@ -29,12 +29,17 @@ class ReversiForm : Form
         //buttons nieuw spel en help
         Button nieuw;
         nieuw = new Button();
+        nieuw.Location = new Point(10,10);
+        nieuw.Text = "Nieuw Spel";
+        nieuw.Click += this.kliknieuw;
+        this.Controls.Add(nieuw);
 
         Button help;
         help = new Button();
-
-        nieuw.Location = new Point();
-        nieuw.Location = new Point();
+        help.Location = new Point(110, 10);
+        help.Text = "Help!";
+        help.Click += this.klikhelp;
+        this.Controls.Add(help);
 
 
         //Velden initialiseren
@@ -43,17 +48,33 @@ class ReversiForm : Form
             for (int y = 0; y < hoogte; y++)
             {
                 velden[x, y] = new Veld(this, x, y, veldomvang);
-                velden[x, y].Location = new Point(x*veldomvang+veldomvang/2, y*veldomvang+veldomvang/2);
+                velden[x, y].Location = new Point(x*veldomvang+veldomvang/2, 30+y*veldomvang+veldomvang/2);
                 Controls.Add(velden[x, y]);
             }
         }
 
     }
 
+    private void klikhelp(object sender, EventArgs e)
+    {
+        //hier moet info komen over wat het scherm moet gaan doen na het klik-event
+    }
+    private void kliknieuw(object sender, EventArgs e)
+    {
+        //hier moet info komen over wat het scherm moet gaan doen na het klik-event
+    }
+
     //Tekenaar
     void ReversiForm_Paint(object o, PaintEventArgs pea)
     {
 
+    }
+    public void BeurtWissel()
+    {
+        if (beurt == 1)
+            beurt = 2;
+        else if (beurt == 2)
+            beurt = 1;
     }
 }
 
