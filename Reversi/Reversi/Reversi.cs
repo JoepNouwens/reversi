@@ -30,14 +30,14 @@ class ReversiForm : Form
         //buttons nieuw spel en help
         Button nieuw;
         nieuw = new Button();
-        nieuw.Location = new Point(10,10);
+        nieuw.Location = new Point(50,20);
         nieuw.Text = "Nieuw Spel";
         nieuw.Click += this.kliknieuw;
         this.Controls.Add(nieuw);
 
         Button help;
         help = new Button();
-        help.Location = new Point(110, 10);
+        help.Location = new Point(150, 20);
         help.Text = "Help!";
         help.Click += this.klikhelp;
         this.Controls.Add(help);
@@ -59,7 +59,15 @@ class ReversiForm : Form
     private void klikhelp(object sender, EventArgs e)
     {
         //hier moet info komen over wat het scherm moet gaan doen na het klik-event
-    }
+        for (int x = 0; x < breedte; x++)
+        {
+            for (int y = 0; y < hoogte; y++)
+            {
+                velden[x, y].showleg = !velden[x, y].showleg;
+                velden[x, y].Invalidate();
+            }
+        }
+    }   
     private void kliknieuw(object sender, EventArgs e)
     {
         //hier moet info komen over wat het scherm moet gaan doen na het klik-event
