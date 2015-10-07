@@ -11,6 +11,7 @@ class ReversiForm : Form
     {
         int veldomvang;
         //Variabelen om gemakkelijk omvang van het veld aan te passen
+        // gerben heeft iets aangepast
         breedte = 6;
         hoogte = 6;
         veldomvang = 80;

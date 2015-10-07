@@ -4,3 +4,9 @@ C:\Users\Roelof\Documents\GitHub\reversi\Reversi\Reversi\bin\Debug\Reversi.pdb
 C:\Users\Roelof\Documents\GitHub\reversi\Reversi\Reversi\obj\Debug\Reversi.csprojResolveAssemblyReference.cache
 C:\Users\Roelof\Documents\GitHub\reversi\Reversi\Reversi\obj\Debug\Reversi.exe
 C:\Users\Roelof\Documents\GitHub\reversi\Reversi\Reversi\obj\Debug\Reversi.pdb
+C:\Users\Gerben\Documents\studie\imperatief\reversi\reversi\Reversi\Reversi\bin\Debug\Reversi.exe.config
+C:\Users\Gerben\Documents\studie\imperatief\reversi\reversi\Reversi\Reversi\obj\Debug\Reversi.exe
+C:\Users\Gerben\Documents\studie\imperatief\reversi\reversi\Reversi\Reversi\obj\Debug\Reversi.pdb
+C:\Users\Gerben\Documents\studie\imperatief\reversi\reversi\Reversi\Reversi\bin\Debug\Reversi.exe
+C:\Users\Gerben\Documents\studie\imperatief\reversi\reversi\Reversi\Reversi\bin\Debug\Reversi.pdb
+C:\Users\Gerben\Documents\studie\imperatief\reversi\reversi\Reversi\Reversi\obj\Debug\Reversi.csprojResolveAssemblyReference.cache
