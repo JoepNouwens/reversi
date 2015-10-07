@@ -26,6 +26,18 @@ class ReversiForm : Form
         this.BackColor = Color.DimGray;
         this.Paint += ReversiForm_Paint;
 
+
+        //buttons nieuw spel en help
+        Button nieuw;
+        nieuw = new Button();
+
+        Button help;
+        help = new Button();
+
+        nieuw.Location = new Point();
+        nieuw.Location = new Point();
+
+
         //Velden initialiseren
         for (int x = 0; x < breedte; x++)
         {
