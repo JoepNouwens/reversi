@@ -4,7 +4,8 @@ using System.Drawing;
 
 class ReversiForm : Form
 {
-    int breedte, hoogte, beurt;
+    int breedte, hoogte;
+    public int beurt;
     Veld[,] velden;
 
     public ReversiForm()
