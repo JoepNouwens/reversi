@@ -7,6 +7,7 @@ class ReversiForm : Form
     int breedte, hoogte;
     public int beurt;
     Veld[,] velden;
+    Label zet, winst;
 
     public ReversiForm()
     {
@@ -42,6 +43,16 @@ class ReversiForm : Form
         help.Click += this.klikhelp;
         this.Controls.Add(help);
 
+        zet = new Label();
+        zet.Location = new Point(300,20);
+        this.Controls.Add(zet);
+        zet.ClientSize = new Size(200,20);
+
+        winst = new Label();
+        winst.Location = new Point(300, 40);
+        this.Controls.Add(winst);
+        winst.ClientSize = new Size(200, 30);
+        winst.Text = "heeft gewonnen";
 
         //Velden initialiseren
         for (int x = 0; x < breedte; x++)
@@ -53,9 +64,31 @@ class ReversiForm : Form
                 Controls.Add(velden[x, y]);
             }
         }
+        
+        StartPositie();      
+    }
 
-        StartPositie();
-        BeurtWissel();
+    private string Beurttext()
+    {
+        if (beurt == 1)
+            return "Rood";
+        else
+            return "Blauw";
+    }
+    
+    public void Winstbericht()
+    {
+        //if bord staat vol, stenen tellen. meeste stenen heeft gewonnen. Dan messagebox
+    }
+
+    private int[] TelStenen()
+    {
+        int[] teller = { 0, 0, 0 };
+
+        for (int x = 0; x < breedte; x++)
+            for (int y = 0; y < hoogte; y++)
+                teller[velden[x,y].Toestand]++;
+        return teller;
     }
 
     //Losse functie, zodat hij aangehaald kan worden bij een nieuw spel
@@ -64,10 +97,15 @@ class ReversiForm : Form
         int midx, midy;
         midx = breedte / 2 - 1;
         midy = hoogte / 2 - 1;
+        for (int y = 0; y < hoogte; y++)
+            for (int x = 0; x < breedte; x++)
+                velden[x,y].Toestand = 0;
         velden[midx, midy].Toestand = 1;
         velden[midx + 1, midy].Toestand = 2;
         velden[midx, midy + 1].Toestand = 2;
         velden[midx + 1, midy + 1].Toestand = 1;
+        // BeurtWissel() wordt aangevraagd om de legaliteit te checken als er een nieuw spel wordt aangevraagd
+        BeurtWissel();
     }
 
     private void klikhelp(object sender, EventArgs e)
@@ -84,7 +122,8 @@ class ReversiForm : Form
     }   
     private void kliknieuw(object sender, EventArgs e)
     {
-        //hier moet info komen over wat het scherm moet gaan doen na het klik-event
+        beurt = 1;
+        StartPositie();      
     }
 
     //Tekenaar
@@ -100,6 +139,7 @@ class ReversiForm : Form
             beurt = 2;
         else if (beurt == 2)
             beurt = 1;
+        zet.Text = Beurttext() + " is aan de beurt";
 
         //Hier de legaliteit herchecken, en veld hertekenen
         for(int x = 0; x < breedte; x++)
