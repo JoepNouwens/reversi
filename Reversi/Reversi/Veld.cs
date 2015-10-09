@@ -2,107 +2,101 @@
 using System.Windows.Forms;
 using System.Drawing;
 
-class Veld : Panel
+namespace Reversi
 {
-    private int toestand;
-    private bool legaal;
-    public int Toestand
+    class Veld : Panel
     {
-        get
+        private int toestand;
+        private bool legaal;
+        public int Toestand
         {
-            return this.toestand;
-        }
-        set
-        {
-            this.toestand = value;
-            this.Invalidate();
-        }
-    }
-    public bool Legaal
-    {
-        get
-        {
-            return this.legaal;
-        }
-        set
-        {
-            legaal = value;
-            //Als de legaliteitsverandering visueel is (help staat aan), moet hij hertekend worden
-            if (Showleg)
+            get
+            {
+                return this.toestand;
+            }
+            set
+            {
+                this.toestand = value;
                 this.Invalidate();
+            }
         }
-    }
-    public bool Showleg;
-    ReversiForm parent;
-    int x, y, omvang;
-
-    public Veld(ReversiForm o, int xpos, int ypos, int veldomvang)
-    {
-        parent = o;
-        x = xpos;
-        y = ypos;
-        omvang = veldomvang;
-        toestand = 0;
-        Showleg = false;
-        legaal = false;
-
-        this.Size = new Size(omvang, omvang);
-        this.Paint += Veld_Paint;
-        this.MouseClick += Veld_Play;
-    }
-
-    public void Veld_Paint(object o, PaintEventArgs pea)
-    {
-        //Functie die het tekenen van het veld moet gaan handelen
-        //(Dus: checken wat de staat is, e.d., vervolgens juiste staat tekenen)
-        Graphics g;
-        Rectangle veld;
-        g = pea.Graphics;
-
-        veld = new Rectangle(0, 0, omvang, omvang);
-        if ((x % 2 + y % 2) % 2 == 0)
-            g.FillRectangle(Brushes.LightBlue, veld);
-        else
-            g.FillRectangle(Brushes.LightCoral, veld);
-
-        switch(toestand)
+        public bool Legaal
         {
-            //Als de zet van rood is
-            case 1:
-                g.FillEllipse(Brushes.Red, veld);
-                break;
-            //Als de zet van blauw is
-            case 2:
-                g.FillEllipse(Brushes.Blue, veld);
-                break;
-            default:
-                //Mits in deze beurt legaal, en 'show', zwarte legaliteitscirkel
-                break;
+            get
+            {
+                return this.legaal;
+            }
+            set
+            {
+                legaal = value;
+                //Als de legaliteitsverandering visueel is (help staat aan), moet hij hertekend worden
+                if (Showleg)
+                    this.Invalidate();
+            }
+        }
+        public bool Showleg;
+        ReversiForm parent;
+        int x, y, omvang;
+        private Bitmap[] images;
+
+        public Veld(ReversiForm o, int xpos, int ypos, int veldomvang)
+        {
+            parent = o;
+            x = xpos;
+            y = ypos;
+            omvang = veldomvang;
+            toestand = 0;
+            Showleg = false;
+            legaal = false;
+
+            //Bepaal of de achtergrondkleur licht of donker is
+            if ((x % 2 + y % 2) % 2 == 0)
+                images = parent.sprites.donker;
+            else
+                images = parent.sprites.licht;
+
+                this.Size = new Size(omvang, omvang);
+            this.Paint += Veld_Paint;
+            this.MouseClick += Veld_Play;
         }
 
-        if (Showleg && legaal)
-            g.DrawEllipse(Pens.Black, 0 + omvang / 4, 0 + omvang / 4, omvang / 2, omvang / 2);
-    }
-
-    public void Veld_Play(object o, MouseEventArgs mea)
-    {
-        //Functie die moet gaan checken: is de zet legaal (voor de huidige speler),
-        //zo ja, speel hem uit (en draai alle gevangen stenen om)
-        //Rood is 1, blauw is 2;
-
-        if (this.legaal)
+        public void Veld_Paint(object o, PaintEventArgs pea)
         {
-            //Zet deze steen
-            toestand = parent.beurt;
-            this.Invalidate();
-            //Voer zijn effect uit
-            parent.Speel(this.x, this.y);
+            //Functie die het tekenen van het veld moet gaan handelen
+            //(Dus: checken wat de staat is, e.d., vervolgens juiste staat tekenen)
+            Graphics g;
+            Rectangle veld;
+            g = pea.Graphics;
 
-            //Verander de beurt
-            parent.BeurtWissel();
+            veld = new Rectangle(0, 0, omvang, omvang);
 
-            //Moet dan de gespeelde zetten invalidaten?
-            //Nee: doe centraal, zodat alle legaliteit herzet kan worden
+            //Teken de toestand in de eigen sprite (achtegrondkleur)
+            if (Showleg && legaal)
+                g.DrawImage(images[3], 0, 0);
+            else
+                g.DrawImage(images[toestand], 0, 0);
+        }
+
+        public void Veld_Play(object o, MouseEventArgs mea)
+        {
+            //Functie die moet gaan checken: is de zet legaal (voor de huidige speler),
+            //zo ja, speel hem uit (en draai alle gevangen stenen om)
+            //Rood is 1, blauw is 2;
+
+            if (this.legaal)
+            {
+                //Zet deze steen
+                toestand = parent.beurt;
+                this.Invalidate();
+                //Voer zijn effect uit
+                parent.Speel(this.x, this.y);
+
+                //Verander de beurt
+                parent.BeurtWissel();
+
+                //Moet dan de gespeelde zetten invalidaten?
+                //Nee: doe centraal, zodat alle legaliteit herzet kan worden
+            }
         }
     }
 }
