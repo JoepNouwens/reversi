@@ -42,7 +42,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Veld.cs" />
+    <Compile Include="Veld.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reversi.cs">
       <SubType>Form</SubType>
     </Compile>

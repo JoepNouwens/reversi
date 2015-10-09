@@ -189,42 +189,32 @@ class ReversiForm : Form
             //Hij zoekt buiten het veld, dus niet op tijd gevonden
             return false;
         }
-        //Deze try verhelpt een fout die niet voor zou mogen komen, namelijk x, y buiten de range
-        try
+        if (velden[x, y].Toestand == beurt)
         {
-            if (velden[x, y].Toestand == beurt)
-            {
-                //Als de aanliggende steen meteen blauw is, is insluiter false
-                if (first == true)
-                    return false;
+            //Als de aanliggende steen meteen blauw is, is insluiter false
+            if (first == true)
+                return false;
+            
+            //Er is een insluitende steen gevonden, als het een zet is moet er worden gespeeld
+            //Anders alleen return
+            if (play)
+                SpeelStenen(-1 * dx + x, -1 * dy + y, -1 * dx, -1 * dy);
 
-                //Er is een insluitende steen gevonden, als het een zet is moet er worden gespeeld
-                //Anders alleen return
-                if (play)
-                    SpeelStenen(-1 * dx + x, -1 * dy + y, -1 * dx, -1 * dy);
-
-                return true;
-            }
-            else
-            {
-                //Check of deze plek niet leeg is
-                if (velden[x, y].Toestand == 0)
-                    return false;
-
-                //Er ligt een steen van de tegenstander
-                //zet de plaats een richting verder
-                x = x + dx;
-                y = y + dy;
-                
-                return VindInsluiter(x, y, dx, dy, play, false);
-            }
+            return true;
         }
-        catch (IndexOutOfRangeException e)
+        else
         {
-            //Zoekt buiten de array, is ergens fout gegaan, in elk geval geen legale zet
-            return false;
+            //Check of deze plek niet leeg is
+            if (velden[x, y].Toestand == 0)
+                return false;
+
+            //Er ligt een steen van de tegenstander
+            //zet de plaats een richting verder
+            x = x + dx;
+            y = y + dy;
+            
+            return VindInsluiter(x, y, dx, dy, play, false);
         }
-        return false;
     }
 
     //Speel stenen terug tot de beurt wordt teruggevonden
