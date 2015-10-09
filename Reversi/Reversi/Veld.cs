@@ -4,9 +4,35 @@ using System.Drawing;
 
 class Veld : Panel
 {
-    public int toestand;
-    public bool legaal;
-    public bool showleg;
+    private int toestand;
+    private bool legaal;
+    public int Toestand
+    {
+        get
+        {
+            return this.toestand;
+        }
+        set
+        {
+            this.toestand = value;
+            this.Invalidate();
+        }
+    }
+    public bool Legaal
+    {
+        get
+        {
+            return this.legaal;
+        }
+        set
+        {
+            legaal = value;
+            //Als de legaliteitsverandering visueel is (help staat aan), moet hij hertekend worden
+            if (Showleg)
+                this.Invalidate();
+        }
+    }
+    public bool Showleg;
     ReversiForm parent;
     int x, y, omvang;
 
@@ -17,7 +43,8 @@ class Veld : Panel
         y = ypos;
         omvang = veldomvang;
         toestand = 0;
-        showleg = false;
+        Showleg = false;
+        legaal = false;
 
         this.Size = new Size(omvang, omvang);
         this.Paint += Veld_Paint;
@@ -53,6 +80,8 @@ class Veld : Panel
                 break;
         }
 
+        if (Showleg && legaal)
+            g.DrawEllipse(Pens.Black, 0 + omvang / 4, 0 + omvang / 4, omvang / 2, omvang / 2);
     }
 
     public void Veld_Play(object o, MouseEventArgs mea)
@@ -60,8 +89,20 @@ class Veld : Panel
         //Functie die moet gaan checken: is de zet legaal (voor de huidige speler),
         //zo ja, speel hem uit (en draai alle gevangen stenen om)
         //Rood is 1, blauw is 2;
-        toestand = parent.beurt;
-        this.Invalidate();
-        parent.BeurtWissel();
+
+        if (this.legaal)
+        {
+            //Zet deze steen
+            toestand = parent.beurt;
+            this.Invalidate();
+            //Voer zijn effect uit
+            parent.Speel(this.x, this.y);
+
+            //Verander de beurt
+            parent.BeurtWissel();
+
+            //Moet dan de gespeelde zetten invalidaten?
+            //Nee: doe centraal, zodat alle legaliteit herzet kan worden
+        }
     }
 }
