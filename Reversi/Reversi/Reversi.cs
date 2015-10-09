@@ -52,7 +52,6 @@ class ReversiForm : Form
         winst.Location = new Point(300, 40);
         this.Controls.Add(winst);
         winst.ClientSize = new Size(200, 30);
-        winst.Text = "heeft gewonnen";
 
         //Velden initialiseren
         for (int x = 0; x < breedte; x++)
@@ -76,9 +75,11 @@ class ReversiForm : Form
             return "Blauw";
     }
     
-    public void Winstbericht()
+    public void Winstbericht(int[] telling)
     {
-        //if bord staat vol, stenen tellen. meeste stenen heeft gewonnen. Dan messagebox
+        if (telling[1] > telling[2])
+            winst.Text = "Rood heeft gewonnen!";
+        else winst.Text = "Blauw heeft gewonnen!";
     }
 
     private int[] TelStenen()
@@ -90,7 +91,7 @@ class ReversiForm : Form
                 teller[velden[x,y].Toestand]++;
         return teller;
     }
-
+    
     //Losse functie, zodat hij aangehaald kan worden bij een nieuw spel
     public void StartPositie()
     {
@@ -150,6 +151,11 @@ class ReversiForm : Form
                 velden[x, y].Legaal = CheckLegal(x, y);
             }
         }
+        //
+        int[] telling = TelStenen();
+        //if bord staat vol, stenen tellen. meeste stenen heeft gewonnen. Dan messagebox
+        if (telling[0] == 0)
+            Winstbericht(telling);
     }
 
     //////////////////////////////////////////////////////////////////////////
