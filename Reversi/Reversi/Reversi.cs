@@ -72,7 +72,6 @@ namespace Reversi
 
             StartPositie();
         }
-
         private string Beurttext()
         {
             if (beurt == 1)
@@ -86,6 +85,17 @@ namespace Reversi
             if (telling[1] > telling[2])
                 winst.Text = "Rood heeft gewonnen!";
             else winst.Text = "Blauw heeft gewonnen!";
+
+            // messagebox maken
+
+            string message = "Rood heeft gewonnen";
+            string caption = "Winnaar";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult result;
+
+            // Displays the MessageBox.
+
+            result = MessageBox.Show(message, caption, buttons);
         }
 
         private int[] TelStenen()
@@ -251,6 +261,7 @@ namespace Reversi
             }
         }
     }
+    
 
     class Program
     {
