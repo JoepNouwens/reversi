@@ -10,3 +10,5 @@ C:\Users\Gerben\Documents\studie\imperatief\reversi\reversi\Reversi\Reversi\obj\
 C:\Users\Gerben\Documents\studie\imperatief\reversi\reversi\Reversi\Reversi\bin\Debug\Reversi.exe
 C:\Users\Gerben\Documents\studie\imperatief\reversi\reversi\Reversi\Reversi\bin\Debug\Reversi.pdb
 C:\Users\Gerben\Documents\studie\imperatief\reversi\reversi\Reversi\Reversi\obj\Debug\Reversi.csprojResolveAssemblyReference.cache
+C:\Users\Roelof\Documents\GitHub\reversi\Reversi\Reversi\obj\Debug\Reversi.Properties.Resources.resources
+C:\Users\Roelof\Documents\GitHub\reversi\Reversi\Reversi\obj\Debug\Reversi.csproj.GenerateResource.Cache
