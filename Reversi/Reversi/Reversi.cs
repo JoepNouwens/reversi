@@ -9,15 +9,18 @@ namespace Reversi
         int breedte, hoogte;
         public int beurt;
         Veld[,] velden;
-        Label zet;
+        Label zet, bstenen, rstenen;
         public Images sprites;
 
         public ReversiForm()
         {
             int veldomvang;
+            // variabelen xpos en ypos om makkelijk de locatie van de buttons en labels aan te passen
+            int xpos;
+            int ypos = 20;
             //Variabelen om gemakkelijk omvang van het veld aan te passen
-            breedte = 4;
-            hoogte = 4;
+            breedte = 6;
+            hoogte = 6;
             veldomvang = 80;
             //Rode speler is 1, blauwe speler is 2
             beurt = 1;
@@ -29,30 +32,41 @@ namespace Reversi
 
             //Form opmaken
             this.Text = "Reversi";
-            this.Size = new Size((breedte + 1) * veldomvang, (hoogte + 2) * veldomvang);
+            this.Size = new Size((breedte + 1) * veldomvang, 110 + (hoogte + 1) * veldomvang);
             this.BackColor = Color.White;
             this.Paint += ReversiForm_Paint;
 
+            xpos = this.Width/2 - 95;
 
             //buttons nieuw spel en help
             Button nieuw;
             nieuw = new Button();
-            nieuw.Location = new Point(50, 20);
+            nieuw.Location = new Point(xpos, ypos);
             nieuw.Text = "Nieuw Spel";
             nieuw.Click += this.kliknieuw;
             this.Controls.Add(nieuw);
 
             Button help;
             help = new Button();
-            help.Location = new Point(150, 20);
+            help.Location = new Point(xpos + 100, ypos);
             help.Text = "Help!";
             help.Click += this.klikhelp;
             this.Controls.Add(help);
-
+            
+            //labels voor beurt en aantal stenen van beide spelers
             zet = new Label();
-            zet.Location = new Point(300, 20);
+            zet.Location = new Point(xpos+nieuw.Width/2, ypos+40);
             this.Controls.Add(zet);
             zet.ClientSize = new Size(200, 20);
+
+            bstenen = new Label();
+            bstenen.Location = new Point(xpos, ypos + 70);
+            this.Controls.Add(bstenen);
+
+            rstenen = new Label();
+            rstenen.Location = new Point(xpos + 100, ypos + 70);
+            this.Controls.Add(rstenen);
+
 
             //Velden initialiseren
             for (int x = 0; x < breedte; x++)
@@ -60,13 +74,14 @@ namespace Reversi
                 for (int y = 0; y < hoogte; y++)
                 {
                     velden[x, y] = new Veld(this, x, y, veldomvang);
-                    velden[x, y].Location = new Point(x * veldomvang + veldomvang / 2, y * veldomvang + veldomvang);
+                    velden[x, y].Location = new Point(x * veldomvang + veldomvang / 2 - 8, 80 + y * veldomvang + veldomvang / 2);
                     Controls.Add(velden[x, y]);
                 }
             }
 
             StartPositie();
         }
+        //methode om van een int voor de speler een string te maken
         private string Beurttext()
         {
             if (beurt == 1)
@@ -74,10 +89,9 @@ namespace Reversi
             else
                 return "Blauw";
         }
-
+        //methode die messagebox laat zien wanneer het spel is afgelopen
         public void Winstbericht(int[] telling)
         {
-
             if (telling[1] > telling[2])
                 zet.Text = "Rood heeft gewonnen!";
             else if (telling[2] > telling[1])
@@ -93,7 +107,7 @@ namespace Reversi
             // Displays the MessageBox.
             MessageBox.Show(message, caption, buttons);
         }
-
+        //methode die de beurt doorgeeft als een speler geen zet kan doen en een messagebox laat zien
         public void MistBeurt()
         {
             string message, caption;
@@ -105,11 +119,10 @@ namespace Reversi
             caption = "Geen zetten";
 
             MessageBoxButtons buttons = MessageBoxButtons.OK;
-            //DialogResult result;
 
             MessageBox.Show(message, caption, buttons);
         }
-
+        //Methode die de stenen telt van beide spelers in een array. ook lege velden worden geteld
         private int[] TelStenen()
         {
             int[] teller = { 0, 0, 0 };
@@ -136,10 +149,9 @@ namespace Reversi
             // BeurtWissel() wordt aangevraagd om de legaliteit te checken als er een nieuw spel wordt aangevraagd
             BeurtWissel();
         }
-
+        //klikmethode om helpfunctie van het programma om speler te tonen welke velden legaal zijn
         private void klikhelp(object sender, EventArgs e)
         {
-            //hier moet info komen over wat het scherm moet gaan doen na het klik-event
             for (int x = 0; x < breedte; x++)
             {
                 for (int y = 0; y < hoogte; y++)
@@ -149,6 +161,7 @@ namespace Reversi
                 }
             }
         }
+        //klikmethode die startpositie aanroept bij klikevent
         private void kliknieuw(object sender, EventArgs e)
         {
             beurt = 1;
@@ -188,6 +201,11 @@ namespace Reversi
             }
 
             int[] telling = TelStenen();
+
+            //bijhouden van aantal stenen
+            rstenen.Text = telling[1].ToString(); // nog steen erachter zetten (bitmap)
+            bstenen.Text = telling[2].ToString();
+
             //if bord staat vol, stenen tellen. meeste stenen heeft gewonnen. Dan messagebox
             if (telling[0] == 0)
             {
@@ -195,14 +213,12 @@ namespace Reversi
                 return;
             }
 
-            //Als geenzetten nog true is, moet de beurt (na melding) teruggaan na de erste speler
-            //Geef messageboks, nog te implementeren
+            //Als geenzetten nog true is, moet de beurt (na melding) teruggaan na de eerste speler
             if(geenzetten)
             {
                 if (!opnieuw)
                 {
                     //Eén speler kan geen zetten, beurt gaat terug
-                    //Geef goeie message
                     MistBeurt();
                     BeurtWissel(true);
                 }
@@ -254,7 +270,7 @@ namespace Reversi
             }
             if (velden[x, y].Toestand == beurt)
             {
-                //Als de aanliggende steen meteen blauw is, is insluiter false
+                //Als de aanliggende steen meteen van dezelfde kleur is, is insluiter false
                 if (first == true)
                     return false;
 
