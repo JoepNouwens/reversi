@@ -9,15 +9,15 @@ namespace Reversi
         int breedte, hoogte;
         public int beurt;
         Veld[,] velden;
-        Label zet, winst;
+        Label zet;
         public Images sprites;
 
         public ReversiForm()
         {
             int veldomvang;
             //Variabelen om gemakkelijk omvang van het veld aan te passen
-            breedte = 3;
-            hoogte = 3;
+            breedte = 4;
+            hoogte = 4;
             veldomvang = 80;
             //Rode speler is 1, blauwe speler is 2
             beurt = 1;
@@ -30,7 +30,7 @@ namespace Reversi
             //Form opmaken
             this.Text = "Reversi";
             this.Size = new Size((breedte + 1) * veldomvang, (hoogte + 2) * veldomvang);
-            this.BackColor = Color.DimGray;
+            this.BackColor = Color.White;
             this.Paint += ReversiForm_Paint;
 
 
@@ -54,18 +54,13 @@ namespace Reversi
             this.Controls.Add(zet);
             zet.ClientSize = new Size(200, 20);
 
-            winst = new Label();
-            winst.Location = new Point(300, 40);
-            this.Controls.Add(winst);
-            winst.ClientSize = new Size(200, 30);
-
             //Velden initialiseren
             for (int x = 0; x < breedte; x++)
             {
                 for (int y = 0; y < hoogte; y++)
                 {
                     velden[x, y] = new Veld(this, x, y, veldomvang);
-                    velden[x, y].Location = new Point(x * veldomvang + veldomvang / 2, 30 + y * veldomvang + veldomvang / 2);
+                    velden[x, y].Location = new Point(x * veldomvang + veldomvang / 2, y * veldomvang + veldomvang);
                     Controls.Add(velden[x, y]);
                 }
             }
@@ -82,19 +77,21 @@ namespace Reversi
 
         public void Winstbericht(int[] telling)
         {
+
             if (telling[1] > telling[2])
                 zet.Text = "Rood heeft gewonnen!";
-            else zet.Text = "Blauw heeft gewonnen!";
+            else if (telling[2] > telling[1])
+                zet.Text = "Blauw heeft gewonnen!";
+            else
+                zet.Text = "Het is remise!";
 
             //Messagebox maken
-            string message = zet.Text;
-            string caption = "Winnaar";
+            string message = "Er zijn geen zetten meer mogelijk. " + zet.Text;
+            string caption = "Uitslag";
             MessageBoxButtons buttons = MessageBoxButtons.OK;
-            DialogResult result;
 
             // Displays the MessageBox.
-            result = MessageBox.Show(message, caption, buttons);
-            Console.WriteLine(result.ToString());
+            MessageBox.Show(message, caption, buttons);
         }
 
         public void MistBeurt()
