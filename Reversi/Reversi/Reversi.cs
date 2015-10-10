@@ -16,8 +16,8 @@ namespace Reversi
         {
             int veldomvang;
             //Variabelen om gemakkelijk omvang van het veld aan te passen
-            breedte = 6;
-            hoogte = 6;
+            breedte = 3;
+            hoogte = 3;
             veldomvang = 80;
             //Rode speler is 1, blauwe speler is 2
             beurt = 1;
@@ -83,19 +83,34 @@ namespace Reversi
         public void Winstbericht(int[] telling)
         {
             if (telling[1] > telling[2])
-                winst.Text = "Rood heeft gewonnen!";
-            else winst.Text = "Blauw heeft gewonnen!";
+                zet.Text = "Rood heeft gewonnen!";
+            else zet.Text = "Blauw heeft gewonnen!";
 
-            // messagebox maken
-
-            string message = "Rood heeft gewonnen";
+            //Messagebox maken
+            string message = zet.Text;
             string caption = "Winnaar";
-            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            MessageBoxButtons buttons = MessageBoxButtons.OK;
             DialogResult result;
 
             // Displays the MessageBox.
-
             result = MessageBox.Show(message, caption, buttons);
+            Console.WriteLine(result.ToString());
+        }
+
+        public void MistBeurt()
+        {
+            string message, caption;
+            if (beurt == 1)
+                message = "Rood kan geen zetten doen, de beurt gaat terug naar blauw.";
+            else
+                message = "Blauw kan geen zetten doen, de beurt gaat terug naar rood.";
+
+            caption = "Geen zetten";
+
+            MessageBoxButtons buttons = MessageBoxButtons.OK;
+            //DialogResult result;
+
+            MessageBox.Show(message, caption, buttons);
         }
 
         private int[] TelStenen()
@@ -150,7 +165,7 @@ namespace Reversi
         }
 
         //Wisselt de beurt
-        public void BeurtWissel()
+        public void BeurtWissel(bool opnieuw = false)
         {
             if (beurt == 1)
                 beurt = 2;
@@ -165,7 +180,7 @@ namespace Reversi
                 for (int y = 0; y < hoogte; y++)
                 {
                     //Als er nog geen legale zetten zijn, moet geenzetten gecheckt worden
-                    if (!geenzetten)
+                    if (geenzetten)
                         if (CheckLegal(x, y))
                         {
                             geenzetten = false;
@@ -174,13 +189,33 @@ namespace Reversi
                     velden[x, y].Legaal = CheckLegal(x, y);
                 }
             }
-            //Als geenzetten nog true is, moet de beurt (na melding) teruggaan na de erste speler
-            //TO DO TO DO
 
             int[] telling = TelStenen();
             //if bord staat vol, stenen tellen. meeste stenen heeft gewonnen. Dan messagebox
             if (telling[0] == 0)
+            {
                 Winstbericht(telling);
+                return;
+            }
+
+            //Als geenzetten nog true is, moet de beurt (na melding) teruggaan na de erste speler
+            //Geef messageboks, nog te implementeren
+            if(geenzetten)
+            {
+                if (!opnieuw)
+                {
+                    //Eén speler kan geen zetten, beurt gaat terug
+                    //Geef goeie message
+                    MistBeurt();
+                    BeurtWissel(true);
+                }
+                else
+                {
+                    //Beide spelers hebben geen zetten meer
+                    //Geef winstmessage
+                    Winstbericht(telling);
+                }
+            }
         }
 
         //////////////////////////////////////////////////////////////////////////
