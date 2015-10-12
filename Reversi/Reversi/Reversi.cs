@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace Reversi
 {
@@ -11,30 +12,36 @@ namespace Reversi
         Veld[,] velden;
         Label zet, bstenen, rstenen;
         public Images sprites;
+        int xpos, ypos;
 
         public ReversiForm()
         {
             int veldomvang;
             // variabelen xpos en ypos om makkelijk de locatie van de buttons en labels aan te passen
-            int xpos;
-            int ypos = 20;
+            ypos = 20;
             //Variabelen om gemakkelijk omvang van het veld aan te passen
-            breedte = 6;
-            hoogte = 6;
+            breedte = 8;
+            hoogte = 8;
             veldomvang = 80;
             //Rode speler is 1, blauwe speler is 2
             beurt = 1;
             //Array met het hele speelbord, opgedeeld in velden
             velden = new Veld[breedte, hoogte];
-
             //Maak de bitmaps
             sprites = new Images();
 
+            if(breedte > 6 || hoogte > 6)
+            {
+                veldomvang = 50;
+            }
+
+
             //Form opmaken
             this.Text = "Reversi";
-            this.Size = new Size((breedte + 1) * veldomvang, 110 + (hoogte + 1) * veldomvang);
+            this.Size = new Size((breedte + 1) * veldomvang, 110 + (hoogte + 1) * veldomvang + veldomvang / 2);
             this.BackColor = Color.White;
             this.Paint += ReversiForm_Paint;
+            this.Resize += ReversiForm_Resize;
 
             xpos = this.Width/2 - 95;
 
@@ -61,10 +68,12 @@ namespace Reversi
 
             bstenen = new Label();
             bstenen.Location = new Point(xpos, ypos + 70);
+            bstenen.Width = 20;
             this.Controls.Add(bstenen);
 
             rstenen = new Label();
             rstenen.Location = new Point(xpos + 100, ypos + 70);
+            rstenen.Width = 20;
             this.Controls.Add(rstenen);
 
 
@@ -74,13 +83,14 @@ namespace Reversi
                 for (int y = 0; y < hoogte; y++)
                 {
                     velden[x, y] = new Veld(this, x, y, veldomvang);
-                    velden[x, y].Location = new Point(x * veldomvang + veldomvang / 2 - 8, 80 + y * veldomvang + veldomvang / 2);
+                    velden[x, y].Location = new Point(x * veldomvang + veldomvang / 2 - 8, 80 + y * veldomvang + veldomvang);
                     Controls.Add(velden[x, y]);
                 }
             }
 
             StartPositie();
         }
+
         //methode om van een int voor de speler een string te maken
         private string Beurttext()
         {
@@ -89,6 +99,7 @@ namespace Reversi
             else
                 return "Blauw";
         }
+
         //methode die messagebox laat zien wanneer het spel is afgelopen
         public void Winstbericht(int[] telling)
         {
@@ -107,6 +118,7 @@ namespace Reversi
             // Displays the MessageBox.
             MessageBox.Show(message, caption, buttons);
         }
+
         //methode die de beurt doorgeeft als een speler geen zet kan doen en een messagebox laat zien
         public void MistBeurt()
         {
@@ -122,6 +134,27 @@ namespace Reversi
 
             MessageBox.Show(message, caption, buttons);
         }
+
+        //klikmethode om helpfunctie van het programma om speler te tonen welke velden legaal zijn
+        private void klikhelp(object sender, EventArgs e)
+        {
+            for (int x = 0; x < breedte; x++)
+            {
+                for (int y = 0; y < hoogte; y++)
+                {
+                    velden[x, y].Showleg = !velden[x, y].Showleg;
+                    velden[x, y].Invalidate();
+                }
+            }
+        }
+
+        //klikmethode die startpositie aanroept bij klikevent
+        private void kliknieuw(object sender, EventArgs e)
+        {
+            beurt = 1;
+            StartPositie();
+        }
+
         //Methode die de stenen telt van beide spelers in een array. ook lege velden worden geteld
         private int[] TelStenen()
         {
@@ -133,7 +166,7 @@ namespace Reversi
             return teller;
         }
 
-        //Losse functie, zodat hij aangehaald kan worden bij een nieuw spel
+        //Losse startpositiefunctie, zodat hij aangehaald kan worden bij een nieuw spel
         public void StartPositie()
         {
             int midx, midy;
@@ -149,29 +182,38 @@ namespace Reversi
             // BeurtWissel() wordt aangevraagd om de legaliteit te checken als er een nieuw spel wordt aangevraagd
             BeurtWissel();
         }
-        //klikmethode om helpfunctie van het programma om speler te tonen welke velden legaal zijn
-        private void klikhelp(object sender, EventArgs e)
+
+        //Eventhandler voor resize
+        void ReversiForm_Resize(object o, EventArgs ea)
+        {
+            ResizeVelden();
+        }
+
+        //Functie voor resize
+        void ResizeVelden()
         {
             for (int x = 0; x < breedte; x++)
             {
                 for (int y = 0; y < hoogte; y++)
                 {
-                    velden[x, y].Showleg = !velden[x, y].Showleg;
-                    velden[x, y].Invalidate();
+                    //velden[x, y].Omvang = 40;
                 }
             }
         }
-        //klikmethode die startpositie aanroept bij klikevent
-        private void kliknieuw(object sender, EventArgs e)
-        {
-            beurt = 1;
-            StartPositie();
-        }
+
 
         //Tekenaar
         void ReversiForm_Paint(object o, PaintEventArgs pea)
         {
+            Graphics g;
+            g = pea.Graphics;
 
+            g.SmoothingMode = SmoothingMode.HighQuality;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+            g.DrawImage(sprites.licht[1], xpos + 20, ypos + 60, 30, 30);
+            g.DrawImage(sprites.licht[2], xpos + 120, ypos + 60, 30, 30);
         }
 
         //Wisselt de beurt
@@ -203,10 +245,10 @@ namespace Reversi
             int[] telling = TelStenen();
 
             //bijhouden van aantal stenen
-            rstenen.Text = telling[1].ToString(); // nog steen erachter zetten (bitmap)
+            rstenen.Text = telling[1].ToString();
             bstenen.Text = telling[2].ToString();
 
-            //if bord staat vol, stenen tellen. meeste stenen heeft gewonnen. Dan messagebox
+            //if bord staat vol, meeste stenen heeft gewonnen. dan messagebox
             if (telling[0] == 0)
             {
                 Winstbericht(telling);
@@ -230,10 +272,6 @@ namespace Reversi
                 }
             }
         }
-
-        //////////////////////////////////////////////////////////////////////////
-        //Functionaliteit voor het checken van legaliteit en spelen van een zet///
-        //////////////////////////////////////////////////////////////////////////
 
         //Check de legaliteit van het vlak op x, y in elke richting
         //Zet is illegaal, behalve als er een legale richting gevonden wordt

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace Reversi
 {
@@ -55,7 +56,7 @@ namespace Reversi
             else
                 images = parent.sprites.licht;
 
-                this.Size = new Size(omvang, omvang);
+            this.Size = new Size(omvang, omvang);
             this.Paint += Veld_Paint;
             this.MouseClick += Veld_Play;
         }
@@ -70,11 +71,15 @@ namespace Reversi
 
             veld = new Rectangle(0, 0, omvang, omvang);
 
+            g.SmoothingMode = SmoothingMode.HighQuality;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
             //Teken de toestand in de eigen sprite (achtegrondkleur)
             if (Showleg && legaal)
-                g.DrawImage(images[3], 0, 0);
+                g.DrawImage(images[3], 0, 0, omvang, omvang);
             else
-                g.DrawImage(images[toestand], 0, 0);
+                g.DrawImage(images[toestand], 0, 0, omvang, omvang);
         }
 
         public void Veld_Play(object o, MouseEventArgs mea)
